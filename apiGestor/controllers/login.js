@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 const signInController = {
   log: async (req, res) => {
     try {
-      const user = { password: "consultorio23" }; //
+      const user = { password: "paraquelaqueres" };
+      console.log(req.body.password);
 
       if (user) {
         const password = user.password;
@@ -12,14 +13,22 @@ const signInController = {
         const isMatch = req.body.password === password;
         if (isMatch) {
           const token = generateJwtToken(papaya); // Generate JWT token
-
+          console.log("Token generated:", token); // Log the generated token
           return res.json({ token: token }); // Return the token in the response
+        } else {
+          console.log("Incorrect password");
+          // Return error response for unmatched password
+          return res.status(401).json({ error: 'Incorrect password' });
         }
+      } else {
+        console.log("User not found");
+        // Return error response for missing user
+        return res.status(404).json({ error: 'User not found' });
       }
-
-      return res.send("no");
     } catch (err) {
-      res.status(400).json({ errors: 'Server error' });
+      console.error(err); // Print the error to the console for debugging
+      // Return generic error response for other exceptions
+      res.status(500).json({ error: 'Internal server error' });
     }
   },
 };
